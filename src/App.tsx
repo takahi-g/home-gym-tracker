@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BodyPart, BODY_PARTS, Exercise, ExerciseRecord, EquipmentType } from './types';
 import {
   loadStoredExercises,
@@ -137,6 +137,44 @@ export function App() {
     return found[0];
   };
 
+  const exerciseSectionRef = useRef<HTMLDivElement>(null);
+
+  // 1.5秒（1500ms）かけて滑らかに種目リストへスクロールする関数
+  const scrollToExercises = () => {
+    if (!exerciseSectionRef.current) return;
+    const targetElement = exerciseSectionRef.current;
+    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 80;
+    const startPosition = window.pageYOffset;
+    const distance = targetPosition - startPosition;
+    const duration = 1500; // 1.5秒
+    let startTime: number | null = null;
+
+    // イージング関数 (easeInOutCubic: 最初と最後が滑らかに減速)
+    const easeInOutCubic = (t: number) => {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    };
+
+    const animation = (currentTime: number) => {
+      if (startTime === null) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      const ease = easeInOutCubic(progress);
+
+      window.scrollTo(0, startPosition + distance * ease);
+
+      if (timeElapsed < duration) {
+        requestAnimationFrame(animation);
+      }
+    };
+
+    requestAnimationFrame(animation);
+  };
+
+  const handleSelectPart = (part: BodyPart) => {
+    setSelectedPart(part);
+    scrollToExercises();
+  };
+
   return (
     <div className="min-h-screen bg-[#070b14] text-slate-100 flex justify-center pb-28 select-none">
       {/* スマホ特化ラッパー */}
@@ -212,7 +250,7 @@ export function App() {
         <RecommendationBanner
           exercises={exercises}
           records={records}
-          onSelectPart={(part) => setSelectedPart(part)}
+          onSelectPart={handleSelectPart}
           onRecordExercise={(ex) => setRecordingExercise(ex)}
         />
 
@@ -222,7 +260,7 @@ export function App() {
             <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1">
               <span>部位ごとの経過日数</span>
             </h3>
-            <span className="text-[10px] text-slate-500">タップで種目表示</span>
+            <span className="text-[10px] text-slate-500">タップで種目へスクロール</span>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
@@ -233,14 +271,14 @@ export function App() {
                 exercises={exercises}
                 records={records}
                 isSelected={selectedPart === part}
-                onSelect={(p) => setSelectedPart(p)}
+                onSelect={handleSelectPart}
               />
             ))}
           </div>
         </div>
 
         {/* 選択中部位の種目セクション */}
-        <div className="space-y-2.5 pt-1">
+        <div ref={exerciseSectionRef} className="space-y-2.5 pt-2 scroll-mt-20">
           <div className="flex items-center justify-between px-0.5">
             <div className="flex items-center gap-1.5">
               <h3 className="text-sm font-black text-white">
