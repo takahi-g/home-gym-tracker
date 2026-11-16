@@ -5,12 +5,13 @@ self.addEventListener('message', (event) => {
   }
 });
 
-const CACHE_NAME = 'home-gym-cache-v2';
+const CACHE_NAME = 'home-gym-cache-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './icon.svg'
+  './icon.svg',
+  './apple-touch-icon.png'
 ];
 
 self.addEventListener('install', (event) => {
