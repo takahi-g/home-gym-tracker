@@ -1,2 +1,2 @@
 // アプリケーションの最新バージョン（更新のたびに書き換わります）
-export const APP_VERSION = "2026/11/16 17:05:00";
+export const APP_VERSION = "2026/11/16 17:10:00";
