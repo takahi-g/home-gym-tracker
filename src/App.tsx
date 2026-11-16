@@ -182,8 +182,8 @@ export function App() {
         {/* スマホ向けヘッダー */}
         <header className="flex items-center justify-between bg-slate-900/90 backdrop-blur-md px-3.5 py-3 rounded-2xl border border-slate-800 shadow-lg sticky top-2 z-30">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 shadow-md shadow-cyan-900/40">
-              <Dumbbell size={20} className="stroke-[2.5]" />
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-amber-500/30 border border-amber-500/40 flex items-center justify-center bg-slate-900">
+              <img src="./icon.svg" alt="App Icon" className="w-full h-full object-cover" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
